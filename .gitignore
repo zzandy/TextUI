@@ -1,0 +1,5 @@
+*.swp
+.vs
+[Bb]in
+[Oo]bj
+packages
