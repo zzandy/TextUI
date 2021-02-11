@@ -4,7 +4,7 @@ using TextUI.Interfaces;
 using TextUI.Layouts;
 using TextUI.Rendering;
 
-namespace KindaCurses
+namespace TextUI.Demo
 {
     internal class Program
     {

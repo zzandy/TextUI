@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace KindaCurses
+namespace TextUI.Demo
 {
     public sealed class Match
     {

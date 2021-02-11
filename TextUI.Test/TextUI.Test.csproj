@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KindaCurses\KindaCurses.csproj" />
+    <ProjectReference Include="..\TextUI\TextUI.csproj" />
   </ItemGroup>
 
 </Project>

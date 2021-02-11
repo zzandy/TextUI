@@ -1,4 +1,4 @@
-﻿namespace KindaCurses
+﻿namespace TextUI.Demo
 {
     public static class PlayerExtensions
     {

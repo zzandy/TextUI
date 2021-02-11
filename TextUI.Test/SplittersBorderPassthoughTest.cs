@@ -3,7 +3,7 @@ using TextUI.Interfaces;
 using TextUI.Layouts;
 using Xunit;
 
-namespace KindaCurses.Test
+namespace TextUI.Test
 {
     public class SplittersBorderPassthoughTest
     {

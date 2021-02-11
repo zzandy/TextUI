@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KindaCurses", "KindaCurses\KindaCurses.csproj", "{460BE642-B8F4-48F2-B115-90D546F32200}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextUI.Demo", "TextUI.Demo\TextUI.Demo.csproj", "{460BE642-B8F4-48F2-B115-90D546F32200}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KindaCurses.Test", "KindaCurses.Test\KindaCurses.Test.csproj", "{7914C125-E27F-42C6-8BE7-99C524E23320}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextUI.Test", "TextUI.Test\TextUI.Test.csproj", "{7914C125-E27F-42C6-8BE7-99C524E23320}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextUI", "TextUI\TextUI.csproj", "{0FFB5C7B-D017-4953-95A1-50F3061527D0}"
 EndProject
