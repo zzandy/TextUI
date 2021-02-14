@@ -1,4 +1,6 @@
-﻿namespace TextUI.Layouts
+﻿using TextUI.Layouts;
+
+namespace TextUI
 {
     public sealed class Column<TRow>
     {

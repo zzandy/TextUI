@@ -89,7 +89,7 @@ namespace TextUI.Demo
 
         private static IRender VSplit(IRender top, IRender bottom, BorderDefinition? border = null)
         {
-            return new SpliTopBottom(top, bottom, border = null);
+            return new SplitTopBottom(top, bottom, border = null);
         }
 
         private static IRender Line(params string[] names)

@@ -174,7 +174,7 @@ namespace TextUI.Test
             var trend = top.As<IRender>();
             var brend = bottom.As<IRender>();
 
-            IBorderFeedback x = new SpliTopBottom(trend.Object, brend.Object);
+            IBorderFeedback x = new SplitTopBottom(trend.Object, brend.Object);
 
             var fb = x.Render(ctx.Object);
 

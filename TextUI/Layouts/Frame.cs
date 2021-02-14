@@ -1,4 +1,5 @@
 ﻿using System;
+using TextUI.Extensions;
 using TextUI.Interfaces;
 using TextUI.Rendering;
 

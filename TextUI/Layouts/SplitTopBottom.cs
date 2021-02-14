@@ -1,15 +1,16 @@
-﻿using TextUI.Interfaces;
+﻿using TextUI.Extensions;
+using TextUI.Interfaces;
 using TextUI.Rendering;
 
 namespace TextUI.Layouts
 {
-    public sealed class SpliTopBottom : IRender, IBorderFeedback
+    public sealed class SplitTopBottom : IRender, IBorderFeedback
     {
         private readonly IRender top;
         private readonly IRender bottom;
         private readonly BorderDefinition? borderDefinition;
 
-        public SpliTopBottom(IRender top, IRender bottom, BorderDefinition? borderDefinition)
+        public SplitTopBottom(IRender top, IRender bottom, BorderDefinition? borderDefinition = null)
         {
             this.top = top;
             this.bottom = bottom;

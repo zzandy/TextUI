@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using TextUI.Layouts;
 
-namespace TextUI.Layouts
+namespace TextUI
 {
     public sealed class Table<TRow> : ITable
     {
-        public Column<TRow>[] columns;
+        private readonly Column<TRow>[] columns;
         private readonly IEnumerable<TRow> data;
 
         public Table(IEnumerable<TRow> data, params Column<TRow>[] columns)

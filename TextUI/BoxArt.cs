@@ -1,6 +1,7 @@
 ﻿using System;
+using TextUI.Layouts;
 
-namespace TextUI.Layouts
+namespace TextUI
 {
     public static class BoxArt
     {

@@ -1,7 +1,6 @@
-﻿using System.Diagnostics;
-using TextUI.Interfaces;
+﻿using TextUI.Interfaces;
 
-namespace TextUI.Rendering
+namespace TextUI.Extensions
 {
     public static class CanvasExtensions
     {
