@@ -75,7 +75,7 @@ namespace TextUI.Test
             var lrend = left.As<IRender>();
             var rrend = right.As<IRender>();
 
-            IBorderFeedback x = new HorizontalSplit(lrend.Object, rrend.Object);
+            IBorderFeedback x = new SplitLeftRight(lrend.Object, rrend.Object);
 
             var fb = x.Render(ctx.Object);
 
@@ -174,7 +174,7 @@ namespace TextUI.Test
             var trend = top.As<IRender>();
             var brend = bottom.As<IRender>();
 
-            IBorderFeedback x = new VerticalSplit(trend.Object, brend.Object);
+            IBorderFeedback x = new SpliTopBottom(trend.Object, brend.Object);
 
             var fb = x.Render(ctx.Object);
 

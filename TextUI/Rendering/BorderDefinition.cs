@@ -1,4 +1,6 @@
-﻿namespace TextUI.Rendering
+﻿using TextUI.Layouts;
+
+namespace TextUI.Rendering
 {
     public struct BorderDefinition
     {
@@ -8,5 +10,6 @@
         public char TopRight;
         public char BottomLeft;
         public char BottomRight;
+        public BorderType Type;
     }
 }

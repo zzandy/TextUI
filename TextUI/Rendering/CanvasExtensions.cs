@@ -1,4 +1,5 @@
-﻿using TextUI.Interfaces;
+﻿using System.Diagnostics;
+using TextUI.Interfaces;
 
 namespace TextUI.Rendering
 {
@@ -31,6 +32,9 @@ namespace TextUI.Rendering
 
             public void Put(int x, int y, char character)
             {
+                //Debug.Assert(0 <= x && x <  Width);
+                //Debug.Assert(0 <= y && y <  Height);
+
                 parent.Put(x + this.x, y + this.y, character);
             }
         }

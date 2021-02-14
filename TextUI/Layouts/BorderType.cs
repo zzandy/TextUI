@@ -2,7 +2,7 @@
 {
     public enum BorderType
     {
-        Default,
+        None,
         Single,
         Double
     }

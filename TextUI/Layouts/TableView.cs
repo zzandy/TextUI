@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using TextUI.Interfaces;
 
@@ -6,7 +7,7 @@ namespace TextUI.Layouts
 {
     public class TableView : IRender, IBorderFeedback
     {
-        private ITable table;
+        private readonly ITable table;
 
         public TableView(ITable table)
         {
@@ -20,138 +21,67 @@ namespace TextUI.Layouts
 
         Feedback IBorderFeedback.Render(ICanvas canvas)
         {
-            var data = new[] { table.Columns }.Union(table.Rows.Take(canvas.Height - 2)).ToArray();
+            var data = table.Rows.Take(canvas.Height - 2).ToArray();
 
-            var widths = table.Columns.Select(c => c.Length).ToArray();
+            var widths = table.Columns.Select((c, i) => Math.Max(c.Length, data.Max(r => r[i].Length))).ToArray();
 
             var feedback = new Feedback();
 
-            feedback.Left[2] = BorderType.Single;
-            feedback.Right[2] = BorderType.Single;
+            var availableWidth = canvas.Width - 2 - 3 * (widths.Length - 1);
+            var fullDesiredWidth = widths.Sum();
+            var ratio = (float)availableWidth / fullDesiredWidth;
 
-            foreach (var row in data)
-            {
-                for (var i = 0; i < widths.Length; ++i)
-                {
-                    widths[i] = Math.Max(widths[i], row[i].Length);
-                }
-            }
-
-            var totalWidth = widths.Sum();
-            var availableWidth = canvas.Width - 2 * widths.Length;
-
-            var cumulative = 0;
-            var ratio = (float)availableWidth / totalWidth;
-
+            var sum = 0;
             for (var i = 0; i < widths.Length - 1; ++i)
             {
-                widths[i] = (int)(widths[i] * ratio);
-                if (widths[i] == 0) widths[i] = 1;
-                cumulative += widths[i];
-
-                var k = cumulative + 2 + 3 * i;
-
-                if (k < canvas.Width)
-                {
-                    feedback.Top[k] = BorderType.Single;
-                    feedback.Bottom[k] = BorderType.Single;
-                }
+                sum += widths[i] = Math.Max(1, (int)(widths[i] * ratio));
+                feedback.Top[sum + 2 + i * 3] = feedback.Bottom[sum + 2 + i * 3] = BorderType.Single;
             }
 
-            widths[widths.Length - 1] = availableWidth - cumulative;
+            widths[widths.Length - 1] = availableWidth - sum;
+
+            feedback.Left[1] = BorderType.Single;
+            feedback.Right[1] = BorderType.Single;
 
             var line = 0;
-            var x = 0;
 
-            for (var i = 0; i < widths.Length; ++i)
+            string Align(string value, int width, bool rightAlign) => rightAlign ? value.PadLeft(width) : value.PadRight(width);
+            string Justify(string value, int width, bool rightAlign) => value.Length > width ? value.Substring(0, width) : Align(value, width, rightAlign);
+            string Pad(string value, int width, bool rightAlign) => ' ' + Justify(value, width, rightAlign) + ' ';
+
+            bool Row(Func<int, string> value, char border)
             {
-                if (i > 0)
+                var x = 0;
+                for (var i = 0; i < widths.Length; ++i)
                 {
-                    if (x > canvas.Width - 4)
+                    var n = 0;
+                    var text = value(i);
+
+                    while (n < text.Length)
+                        canvas.Put(x++, line, text[n++]);
+
+                    if (x > canvas.Width)
                         break;
 
-                    canvas.Put(x++, line, ' ');
-                    canvas.Put(x++, line, Border.SingleBorder.Vertical);
-                    canvas.Put(x++, line, ' ');
+                    if (i != widths.Length - 1)
+                    {
+                        canvas.Put(x++, line, border);
+                    }
                 }
 
-                var cell = (table.GetTextAlign(i) == TextAlign.Right ? table.Columns[i].PadLeft(widths[i]) : table.Columns[i].PadRight(widths[i])).Substring(0, widths[i]);
-
-                foreach (var c in cell)
-                {
-                    canvas.Put(x++, line, c);
-                    if (x >= canvas.Width)
-                        break;
-                }
-
-
-                if (x >= canvas.Width)
-                    break;
+                return ++line >= canvas.Height;
             }
 
-            if (++line >= canvas.Height)
+            if (Row(i => Pad(table.Columns[i], widths[i], table.GetTextAlign(i) == TextAlign.Right), Frame.SingleBorder.Vertical))
                 return feedback;
-            x = 0;
-            for (var i = 0; i < widths.Length; ++i)
-            {
-                if (i > 0)
-                {
-                    if (x > canvas.Width - 4)
-                        break;
 
-                    canvas.Put(x++, line, Border.SingleBorder.Horizontal);
-                    canvas.Put(x++, line, BoxArt.Get(BorderType.Single, BorderType.Single));
-                    canvas.Put(x++, line, Border.SingleBorder.Horizontal);
-                }
-
-                var cell = new String(Border.SingleBorder.Horizontal, widths[i]);
-
-                foreach (var c in cell)
-                {
-                    canvas.Put(x++, line, c);
-                    if (x >= canvas.Width)
-                        break;
-                }
-
-
-                if (x >= canvas.Width)
-                    break;
-            }
-
-            if (++line >= canvas.Height)
+            if (Row(i => new string(Frame.SingleBorder.Horizontal, widths[i] + 2), BoxArt.Get(BorderType.Single, BorderType.Single)))
                 return feedback;
 
             foreach (var row in data)
             {
-                x = 0;
-
-                for (var i = 0; i < widths.Length; ++i)
-                {
-                    if (i > 0)
-                    {
-                        if (x > canvas.Width - 4)
-                            break;
-
-                        canvas.Put(x++, line, ' ');
-                        canvas.Put(x++, line, Border.SingleBorder.Vertical);
-                        canvas.Put(x++, line, ' ');
-                    }
-
-                    var cell = (table.GetTextAlign(i) == TextAlign.Right ? row[i].PadLeft(widths[i]) : row[i].PadRight(widths[i])).Substring(0, widths[i]); ;
-
-                    foreach (var c in cell)
-                    {
-                        canvas.Put(x++, line, c);
-                        if (x >= canvas.Width)
-                            break;
-                    }
-
-                    if (x >= canvas.Width)
-                        break;
-                }
-
-                if (++line >= canvas.Height)
-                    break;
+                if (Row(i => Pad(row[i], widths[i], table.GetTextAlign(i) == TextAlign.Right), Frame.SingleBorder.Vertical))
+                    return feedback;
             }
 
             return feedback;

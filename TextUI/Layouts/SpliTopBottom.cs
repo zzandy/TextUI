@@ -3,15 +3,17 @@ using TextUI.Rendering;
 
 namespace TextUI.Layouts
 {
-    public sealed class VerticalSplit : IRender, IBorderFeedback
+    public sealed class SpliTopBottom : IRender, IBorderFeedback
     {
         private readonly IRender top;
         private readonly IRender bottom;
+        private readonly BorderDefinition? borderDefinition;
 
-        public VerticalSplit(IRender top, IRender bottom)
+        public SpliTopBottom(IRender top, IRender bottom, BorderDefinition? borderDefinition)
         {
             this.top = top;
             this.bottom = bottom;
+            this.borderDefinition = borderDefinition;
         }
 
         public void Render(ICanvas canvas)
@@ -30,13 +32,13 @@ namespace TextUI.Layouts
 
             var feedback = new Feedback();
 
-            if (top is IBorderFeedback)
-                feedback.Apply((top as IBorderFeedback).Render(canvas.Area(0, 0, canvas.Width, splitAt)).NotBottom());
+            if (top is IBorderFeedback fb)
+                feedback.Apply(fb.Render(canvas.Area(0, 0, canvas.Width, splitAt)).NotBottom());
             else
                 top.Render(canvas.Area(0, 0, canvas.Width, splitAt));
 
             if (bottom is IBorderFeedback borderFeedback)
-                feedback.Apply(borderFeedback.Render(canvas.Area(0, splitAt, canvas.Width, canvas.Height - splitAt)).NotTop(),0,  splitAt);
+                feedback.Apply(borderFeedback.Render(canvas.Area(0, splitAt, canvas.Width, canvas.Height - splitAt)).NotTop(), 0, splitAt);
             else
                 bottom.Render(canvas.Area(0, splitAt, canvas.Width, canvas.Height - splitAt));
 

@@ -24,10 +24,14 @@ namespace TextUI.Demo
                 new Column<Match>("defence", r => r.Blue.Defence.Name())
             );
 
-            var ui = VSplit(Line("File", "Edit", "View"), Box(HSplit(Table(t1), Table(t1))));
-
+            var ui = VSplit(Line("File", "Edit", "View"), Box(HSplit(Table(t1), Table(t1), Frame.DoubleBorder)));
             screen.Root = ui;
+            screen.Render();
 
+            Console.ReadLine();
+
+             ui = VSplit(Line("File", "Edit", "View"), Box(VSplit(Table(t1), Table(t1), Frame.DoubleBorder)));
+            screen.Root = ui;
             screen.Render();
 
             Console.ReadLine();
@@ -83,9 +87,9 @@ namespace TextUI.Demo
             return items[r.Next(items.Count)];
         }
 
-        private static IRender VSplit(IRender top, IRender bottom)
+        private static IRender VSplit(IRender top, IRender bottom, BorderDefinition? border = null)
         {
-            return new VerticalSplit(top, bottom);
+            return new SpliTopBottom(top, bottom, border = null);
         }
 
         private static IRender Line(params string[] names)
@@ -93,14 +97,14 @@ namespace TextUI.Demo
             return new Line(names);
         }
 
-        private static IRender HSplit(IRender left, IRender right)
+        private static IRender HSplit(IRender left, IRender right, BorderDefinition? border = null)
         {
-            return new HorizontalSplit(left, right);
+            return new SplitLeftRight(left, right, border);
         }
 
         private static IRender Box(IRender content)
         {
-            return new Border(content, Border.DoubleBorder);
+            return new Frame(content, Frame.DoubleBorder);
         }
 
         private static IRender Table<TRow>(Table<TRow> table)
