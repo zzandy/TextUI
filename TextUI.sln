@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextUI.Demo", "TextUI.Demo\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextUI.Test", "TextUI.Test\TextUI.Test.csproj", "{7914C125-E27F-42C6-8BE7-99C524E23320}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextUI", "TextUI\TextUI.csproj", "{0FFB5C7B-D017-4953-95A1-50F3061527D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextUI", "TextUI\TextUI.csproj", "{0FFB5C7B-D017-4953-95A1-50F3061527D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7AD058A3-ED97-4FD2-BA88-85DD774BC622}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
