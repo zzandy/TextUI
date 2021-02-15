@@ -1,10 +1,9 @@
 ﻿using TextUI.Extensions;
 using TextUI.Interfaces;
-using TextUI.Rendering;
 
 namespace TextUI.Layouts
 {
-    public sealed class SplitLeftRight : IRender, IBorderFeedback
+    public sealed class SplitLeftRight : IRender
     {
         private readonly IRender left;
         private readonly IRender right;
@@ -17,16 +16,9 @@ namespace TextUI.Layouts
             this.border = border;
         }
 
-        public void Render(ICanvas canvas)
+        public void Render(IRenderContext ctx)
         {
-            ((IBorderFeedback)this).Render(canvas);
-        }
-
-        Feedback IBorderFeedback.Render(ICanvas canvas)
-        {
-            var feedback = new Feedback();
-
-            var splitAt = canvas.Width / 2;
+            var splitAt = ctx.Width / 2;
 
             if (left is ILayout layout && layout.DesiredWidth < splitAt)
             {
@@ -34,43 +26,23 @@ namespace TextUI.Layouts
             }
 
             if (border.HasValue)
-                feedback.Top[splitAt] = feedback.Bottom[splitAt] = border.Value;
+                ctx.JoinTopDown(splitAt, border.Value);
 
-            Feedback feedbackLeft = new Feedback();
-            Feedback feedbackRight = new Feedback();
-
-            if (left is IBorderFeedback fb1)
-            {
-                feedbackLeft = fb1.Render(canvas.Area(0, 0, splitAt, canvas.Height));
-                feedback.Apply(feedbackLeft.NotRight());
-            }
-            else
-                left.Render(canvas.Area(0, 0, splitAt, canvas.Height));
+            var innerLeft = ctx.Scope(0, 0, splitAt, ctx.Height, Side.NotRight);
+            left.Render(innerLeft);
 
             var b = (border.HasValue ? 1 : 0);
 
-            if (right is IBorderFeedback fb2)
-            {
-                feedbackRight = fb2.Render(canvas.Area(splitAt + b, 0, canvas.Width - splitAt - b, canvas.Height));
-                feedback.Apply(feedbackRight.NotLeft(), splitAt + b, 0);
-            }
-            else
-                right.Render(canvas.Area(splitAt, 0, canvas.Width - splitAt - b, canvas.Height));
+            var innerRight = ctx.Scope(splitAt + b, 0, ctx.Width - splitAt - b, ctx.Height, Side.NotLeft);
+            right.Render(innerRight);
 
             if (border.HasValue)
-                for (int i = 0; i < canvas.Height; i++)
+                for (int i = 0; i < ctx.Height; i++)
                 {
-                    var c = BoxArt.Get(
-                        border.Value,
-                        feedbackRight.Left.TryGetValue(i, out var bl) ? bl : BorderType.None,
-                        border.Value,
-                        feedbackLeft.Right.TryGetValue(i, out var br) ? br : BorderType.None
-                    );
+                    var c = BoxArt.Get(border.Value, innerRight.GetJoinLeft(i), border.Value, innerLeft.GetJoinRight(i));
 
-                    canvas.Put(splitAt, i, c); ;
+                    ctx.Put(splitAt, i, c); ;
                 }
-
-            return feedback;
         }
     }
 }

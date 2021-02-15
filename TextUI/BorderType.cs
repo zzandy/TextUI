@@ -1,4 +1,4 @@
-﻿namespace TextUI.Layouts
+﻿namespace TextUI
 {
     public enum BorderType
     {

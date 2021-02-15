@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TextUI.Interfaces;
 using TextUI.Layouts;
 
 namespace TextUI

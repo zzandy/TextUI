@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
+using TextUI.Extensions;
 using TextUI.Interfaces;
 
 namespace TextUI.Layouts
 {
-    public class TableView : IRender, IBorderFeedback
+    public class TableView : IRender
     {
         private readonly ITable table;
 
         private static readonly char Vertical = BoxArt.Get(BorderType.Single, BorderType.None);
-        private static readonly char Horizontal= BoxArt.Get(BorderType.None, BorderType.Single);
+        private static readonly char Horizontal = BoxArt.Get(BorderType.None, BorderType.Single);
         private static readonly char Cross = BoxArt.Get(BorderType.Single, BorderType.Single);
 
         public TableView(ITable table)
@@ -18,20 +18,13 @@ namespace TextUI.Layouts
             this.table = table;
         }
 
-        public void Render(ICanvas canvas)
+        public void Render(IRenderContext ctx)
         {
-            (this as IBorderFeedback).Render(canvas);
-        }
-
-        Feedback IBorderFeedback.Render(ICanvas canvas)
-        {
-            var data = table.Rows.Take(canvas.Height - 2).ToArray();
+            var data = table.Rows.Take(ctx.Height - 2).ToArray();
 
             var widths = table.Columns.Select((c, i) => Math.Max(c.Length, data.Max(r => r[i].Length))).ToArray();
 
-            var feedback = new Feedback();
-
-            var availableWidth = canvas.Width - 2 - 3 * (widths.Length - 1);
+            var availableWidth = ctx.Width - 2 - 3 * (widths.Length - 1);
             var fullDesiredWidth = widths.Sum();
             var ratio = (float)availableWidth / fullDesiredWidth;
 
@@ -39,13 +32,13 @@ namespace TextUI.Layouts
             for (var i = 0; i < widths.Length - 1; ++i)
             {
                 sum += widths[i] = Math.Max(1, (int)(widths[i] * ratio));
-                feedback.Top[sum + 2 + i * 3] = feedback.Bottom[sum + 2 + i * 3] = BorderType.Single;
+
+                ctx.JoinTopDown(sum + 2 + i * 3, BorderType.Single);
             }
 
             widths[widths.Length - 1] = availableWidth - sum;
 
-            feedback.Left[1] = BorderType.Single;
-            feedback.Right[1] = BorderType.Single;
+            ctx.JoinLeftRight(1, BorderType.Single);
 
             var line = 0;
 
@@ -61,34 +54,32 @@ namespace TextUI.Layouts
                     var n = 0;
                     var text = value(i);
 
-                    while (n < text.Length && x < canvas.Width)
-                        canvas.Put(x++, line, text[n++]);
+                    while (n < text.Length && x < ctx.Width)
+                        ctx.Put(x++, line, text[n++]);
 
-                    if (x > canvas.Width)
+                    if (x > ctx.Width)
                         break;
 
                     if (i != widths.Length - 1)
                     {
-                        canvas.Put(x++, line, border);
+                        ctx.Put(x++, line, border);
                     }
                 }
 
-                return ++line >= canvas.Height;
+                return ++line >= ctx.Height;
             }
 
             if (Row(i => Pad(table.Columns[i], widths[i], table.GetTextAlign(i) == TextAlign.Right), Vertical))
-                return feedback;
-            
+                return;
+
             if (Row(i => new string(Horizontal, widths[i] + 2), Cross))
-                return feedback;
+                return;
 
             foreach (var row in data)
             {
                 if (Row(i => Pad(row[i], widths[i], table.GetTextAlign(i) == TextAlign.Right), Vertical))
-                    return feedback;
+                    return;
             }
-
-            return feedback;
         }
     }
 }

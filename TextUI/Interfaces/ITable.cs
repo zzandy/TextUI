@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using TextUI.Layouts;
 
-namespace TextUI.Layouts
+namespace TextUI.Interfaces
 {
     public interface ITable
     {

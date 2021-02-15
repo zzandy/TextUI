@@ -17,28 +17,28 @@ namespace TextUI.Layouts
 
         public int DesiredHeight => 1;
 
-        public void Render(ICanvas canvas)
+        public void Render(IRenderContext ctx)
         {
             var x = 0;
-            if (canvas.Height > 0)
+            if (ctx.Height > 0)
             {
                 foreach (var value in values)
                 {
                     foreach (var c in value)
                     {
-                        canvas.Put(x++, 0, c);
-                        if (x >= canvas.Width) break;
+                        ctx.Put(x++, 0, c);
+                        if (x >= ctx.Width) break;
                     }
 
-                    if (x < canvas.Width - 3)
+                    if (x < ctx.Width - 3)
                     {
-                        canvas.Put(x++, 0, ' ');
-                        canvas.Put(x++, 0, ' ');
+                        ctx.Put(x++, 0, ' ');
+                        ctx.Put(x++, 0, ' ');
                     }
                 }
 
-                while (x < canvas.Width)
-                    canvas.Put(x++, 0, ' ');
+                while (x < ctx.Width)
+                    ctx.Put(x++, 0, ' ');
             }
         }
     }

@@ -2,6 +2,6 @@
 {
     public interface IRender
     {
-        void Render(ICanvas canvas);
+        void Render(IRenderContext ctx);
     }
 }

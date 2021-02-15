@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 using TextUI.Interfaces;
+using TextUI.Layouts;
 
 namespace TextUI.Rendering
 {
@@ -31,7 +32,7 @@ namespace TextUI.Rendering
 
             SmallRect rect = new SmallRect { Left = 0, Top = 0, Right = w, Bottom = h };
 
-            Root.Render(new Canvas(w, h, buf));
+            Root.Render(new RenderContext(w, h, buf));
 
             WriteConsoleOutput(pending, buf,
                           new Coord { X = w, Y = h },
@@ -45,11 +46,11 @@ namespace TextUI.Rendering
             visible = tmp;
         }
 
-        public sealed class Canvas : ICanvas
+        public sealed class RenderContext : IRenderContext
         {
             private readonly CharInfo[] buf;
 
-            public Canvas(short w, short h, CharInfo[] buf)
+            public RenderContext(short w, short h, CharInfo[] buf)
             {
                 this.W = w;
                 this.H = h;
@@ -68,6 +69,42 @@ namespace TextUI.Rendering
             {
                 buf[y * W + x].Attributes = 1 | 2 | 8 | 0x10;
                 buf[y * W + x].Char.UnicodeChar = character;
+            }
+
+            public void JoinTop(int x, BorderType border)
+            {
+            }
+
+            public void JoinBottom(int x, BorderType border)
+            {
+            }
+
+            public void JoinLeft(int y, BorderType border)
+            {
+            }
+
+            public void JoinRight(int y, BorderType border)
+            {
+            }
+
+            public BorderType GetJoinTop(int x)
+            {
+                return BorderType.None;
+            }
+
+            public BorderType GetJoinBottom(int x)
+            {
+                return BorderType.None;
+            }
+
+            public BorderType GetJoinRight(int y)
+            {
+                return BorderType.None;
+            }
+
+            public BorderType GetJoinLeft(int y)
+            {
+                return BorderType.None;
             }
         }
 
