@@ -15,12 +15,12 @@ namespace TextUI
             this.data = data;
         }
 
-        public IEnumerable<string[]> Rows => data.Select(row => columns.Select(col => col.get(row)).ToArray());
-        public string[] Columns => columns.Select(col => col.name).ToArray();
+        public IEnumerable<string[]> Rows => data.Select(row => columns.Select(col => col.Get(row)).ToArray());
+        public string[] Columns => columns.Select(col => col.Name).ToArray();
 
         public TextAlign GetTextAlign(int i)
         {
-            return columns[i].align;
+            return columns[i].Align;
         }
     }
 }
