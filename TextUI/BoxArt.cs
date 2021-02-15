@@ -29,6 +29,16 @@ namespace TextUI
             Cross[Ternary(two, one, two, one)] = (char)215;
             Cross[Ternary(one, two, one, two)] = (char)216;
 
+            Cross[Ternary(two, two, two, one)] = (char)204;
+            Cross[Ternary(two, two, one, two)] = (char)202;
+            Cross[Ternary(two, one, two, two)] = (char)185;
+            Cross[Ternary(one, two, two, two)] = (char)204;
+
+            Cross[Ternary(one, one, one, two)] = (char)204;
+            Cross[Ternary(one, one, two, one)] = (char)202;
+            Cross[Ternary(one, two, one, one)] = (char)185;
+            Cross[Ternary(two, one, one, one)] = (char)204;
+
             Cross[Ternary(one, one, nil, one)] = (char)193;
             Cross[Ternary(nil, one, one, one)] = (char)194;
             Cross[Ternary(one, nil, one, one)] = (char)180;

@@ -61,7 +61,7 @@ namespace TextUI.Layouts
                     var n = 0;
                     var text = value(i);
 
-                    while (n < text.Length)
+                    while (n < text.Length && x < canvas.Width)
                         canvas.Put(x++, line, text[n++]);
 
                     if (x > canvas.Width)
@@ -78,7 +78,6 @@ namespace TextUI.Layouts
 
             if (Row(i => Pad(table.Columns[i], widths[i], table.GetTextAlign(i) == TextAlign.Right), Vertical))
                 return feedback;
-
             
             if (Row(i => new string(Horizontal, widths[i] + 2), Cross))
                 return feedback;

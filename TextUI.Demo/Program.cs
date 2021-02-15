@@ -24,13 +24,13 @@ namespace TextUI.Demo
                 new Column<Match>("defence", r => r.Blue.Defence.Name())
             );
 
-            var ui = VSplit(Line("File", "Edit", "View"), Box(HSplit(Table(t1), Table(t1), BorderType.Double), BorderType.Double));
+            var ui = VSplit(Line("File", "Edit", "View"), Box(HSplit(Table(t1), VSplit(Line("Here is the same table again"), Table(t1), BorderType.Single), BorderType.Double), BorderType.Double));
             screen.Root = ui;
             screen.Render();
 
             Console.ReadLine();
 
-            ui = VSplit(Line("File", "Edit", "View"), Box(VSplit(Table(t1), Table(t1), BorderType.Double), BorderType.Single));
+            ui = VSplit(Line("File", "Edit", "View"), Box(VSplit(HSplit(Line("X"), Table(t1), BorderType.Double), Table(t1), BorderType.Double), BorderType.Single));
             screen.Root = ui;
             screen.Render();
 

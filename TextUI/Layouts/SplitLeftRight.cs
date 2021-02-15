@@ -27,6 +27,12 @@ namespace TextUI.Layouts
             var feedback = new Feedback();
 
             var splitAt = canvas.Width / 2;
+
+            if (left is ILayout layout && layout.DesiredWidth < splitAt)
+            {
+                splitAt = layout.DesiredWidth;
+            }
+
             if (border.HasValue)
                 feedback.Top[splitAt] = feedback.Bottom[splitAt] = border.Value;
 
@@ -41,14 +47,15 @@ namespace TextUI.Layouts
             else
                 left.Render(canvas.Area(0, 0, splitAt, canvas.Height));
 
+            var b = (border.HasValue ? 1 : 0);
+
             if (right is IBorderFeedback fb2)
             {
-                var i = (border.HasValue ? 1 : 0);
-                feedbackRight = fb2.Render(canvas.Area(splitAt + i, 0, canvas.Width - splitAt +i, canvas.Height));
-                feedback.Apply(feedbackRight.NotLeft(), splitAt + i, 0);
+                feedbackRight = fb2.Render(canvas.Area(splitAt + b, 0, canvas.Width - splitAt - b, canvas.Height));
+                feedback.Apply(feedbackRight.NotLeft(), splitAt + b, 0);
             }
             else
-                right.Render(canvas.Area(splitAt, 0, canvas.Width - splitAt, canvas.Height));
+                right.Render(canvas.Area(splitAt, 0, canvas.Width - splitAt - b, canvas.Height));
 
             if (border.HasValue)
                 for (int i = 0; i < canvas.Height; i++)

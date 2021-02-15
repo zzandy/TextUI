@@ -27,7 +27,7 @@ namespace TextUI.Layouts
         {
             var splitAt = canvas.Height / 2;
 
-            if (top is ILayout layout)
+            if (top is ILayout layout && layout.DesiredHeight < splitAt)
             {
                 splitAt = layout.DesiredHeight;
             }
@@ -48,23 +48,22 @@ namespace TextUI.Layouts
             else
                 top.Render(canvas.Area(0, 0, canvas.Width, splitAt));
 
-
+            var b = (border.HasValue ? 1 : 0);
             if (bottom is IBorderFeedback fb2)
             {
-                var i = (border.HasValue ? 1 : 0);
-                feedbackBottom = fb2.Render(canvas.Area(0, splitAt + i, canvas.Width, canvas.Height - splitAt));
-                feedback.Apply(feedbackBottom.NotTop(), 0, splitAt + i);
+                feedbackBottom = fb2.Render(canvas.Area(0, splitAt + b, canvas.Width, canvas.Height - splitAt - b));
+                feedback.Apply(feedbackBottom.NotTop(), 0, splitAt + b);
             }
             else
-                bottom.Render(canvas.Area(0, splitAt, canvas.Width, canvas.Height - splitAt));
+                bottom.Render(canvas.Area(0, splitAt, canvas.Width, canvas.Height - splitAt - b));
 
             if (border.HasValue)
                 for (int i = 0; i < canvas.Width; i++)
                 {
                     var c = BoxArt.Get(
-                        feedbackBottom.Top.TryGetValue(i, out var bl) ? bl : BorderType.None,
+                        feedbackTop.Bottom.TryGetValue(i, out var bl) ? bl : BorderType.None,
                         border.Value,
-                        feedbackTop.Bottom.TryGetValue(i, out var br) ? br : BorderType.None,
+                        feedbackBottom.Top.TryGetValue(i, out var br) ? br : BorderType.None,
                         border.Value
                     );
 

@@ -1,4 +1,6 @@
-﻿using TextUI.Interfaces;
+﻿using System;
+using System.Diagnostics;
+using TextUI.Interfaces;
 
 namespace TextUI.Extensions
 {
@@ -15,24 +17,24 @@ namespace TextUI.Extensions
             private readonly int x;
             private readonly int y;
 
+            public int Width { get; }
+
+            public int Height { get; }
+
             public CanvasArea(ICanvas parent, int originX, int originY, int width, int height)
             {
                 this.parent = parent;
-                this.x = originX;
-                this.y = originY;
+                x = originX;
+                y = originY;
 
                 Width = width;
                 Height = height;
             }
 
-            public int Width { get; }
-
-            public int Height { get; }
-
             public void Put(int x, int y, char character)
             {
-                //Debug.Assert(0 <= x && x <  Width);
-                //Debug.Assert(0 <= y && y <  Height);
+                Debug.Assert(0 <= x && x <  Width);
+                Debug.Assert(0 <= y && y <  Height);
 
                 parent.Put(x + this.x, y + this.y, character);
             }

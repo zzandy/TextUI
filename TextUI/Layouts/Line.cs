@@ -1,4 +1,5 @@
-﻿using TextUI.Interfaces;
+﻿using System.Linq;
+using TextUI.Interfaces;
 
 namespace TextUI.Layouts
 {
@@ -9,9 +10,10 @@ namespace TextUI.Layouts
         public Line(params string[] lines)
         {
             values = lines;
+            DesiredWidth = lines.Sum(line => line.Length) + 2 * lines.Length - 2;
         }
 
-        public int DesiredWidth => 0;
+        public int DesiredWidth { get; private set; }
 
         public int DesiredHeight => 1;
 
