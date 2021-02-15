@@ -24,13 +24,13 @@ namespace TextUI.Demo
                 new Column<Match>("defence", r => r.Blue.Defence.Name())
             );
 
-            var ui = VSplit(Line("File", "Edit", "View"), Box(HSplit(Table(t1), Table(t1), Frame.DoubleBorder)));
+            var ui = VSplit(Line("File", "Edit", "View"), Box(HSplit(Table(t1), Table(t1), BorderType.Double), BorderType.Double));
             screen.Root = ui;
             screen.Render();
 
             Console.ReadLine();
 
-             ui = VSplit(Line("File", "Edit", "View"), Box(VSplit(Table(t1), Table(t1), Frame.DoubleBorder)));
+            ui = VSplit(Line("File", "Edit", "View"), Box(VSplit(Table(t1), Table(t1), BorderType.Double), BorderType.Single));
             screen.Root = ui;
             screen.Render();
 
@@ -39,7 +39,7 @@ namespace TextUI.Demo
 
         private static Match[] GetData()
         {
-            var names ="Glenn;Jean Paul;Andy;Wojtech;Tomas;Meg;Randy;Bill;James;Richard;Kenny;Ivan;Andre;Jamal;Sandy;Sarah;Anna;July;Jessica;Kate;Oliver;Hans;Peter;Chris;John;Yves;Helen;Bruce;Ben".Split(";");
+            var names = "Glenn;Jean Paul;Andy;Wojtech;Tomas;Meg;Randy;Bill;James;Richard;Kenny;Ivan;Andre;Jamal;Sandy;Sarah;Anna;July;Jessica;Kate;Oliver;Hans;Peter;Chris;John;Yves;Helen;Bruce;Ben".Split(";");
             var surnames = "McLane;De Biers;Thatcher;Kracher;Muller;Swartz;Moreau;De Gaule;Platini;Mitteran;Shreder;Johnson;Hayek;Kenobi;Macron;Cameron;Trump;Jackson;Oakenfold;Oldfield;Guetta".Split(";");
 
             var random = new Random();
@@ -65,7 +65,7 @@ namespace TextUI.Demo
                     Red = new TeamResult
                     {
                         Defence = Pick(random, players),
-                        Offence= Pick(random, players),
+                        Offence = Pick(random, players),
                         Score = random.Next(5)
                     },
                     Blue = new TeamResult
@@ -78,7 +78,7 @@ namespace TextUI.Demo
                     End = DateTimeOffset.Now
                 });
             }
-            
+
             return data.ToArray();
         }
 
@@ -87,9 +87,9 @@ namespace TextUI.Demo
             return items[r.Next(items.Count)];
         }
 
-        private static IRender VSplit(IRender top, IRender bottom, BorderDefinition? border = null)
+        private static IRender VSplit(IRender top, IRender bottom, BorderType? border = null)
         {
-            return new SplitTopBottom(top, bottom, border = null);
+            return new SplitTopBottom(top, bottom, border);
         }
 
         private static IRender Line(params string[] names)
@@ -97,14 +97,14 @@ namespace TextUI.Demo
             return new Line(names);
         }
 
-        private static IRender HSplit(IRender left, IRender right, BorderDefinition? border = null)
+        private static IRender HSplit(IRender left, IRender right, BorderType? border = null)
         {
             return new SplitLeftRight(left, right, border);
         }
 
-        private static IRender Box(IRender content)
+        private static IRender Box(IRender content, BorderType borderType)
         {
-            return new Frame(content, Frame.DoubleBorder);
+            return new Frame(content, borderType);
         }
 
         private static IRender Table<TRow>(Table<TRow> table)

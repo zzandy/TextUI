@@ -1,64 +1,89 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using TextUI.Layouts;
+using TextUI.Rendering;
 
 namespace TextUI
 {
     public static class BoxArt
     {
-        private static readonly char[] cross;
+        private static readonly char[] Cross;
+
+        public static ImmutableDictionary<BorderType, BorderDefinition> Border;
 
         static BoxArt()
         {
-            var none = BorderType.None;
+            var nil = BorderType.None;
             var one = BorderType.Single;
             var two = BorderType.Double;
 
-            cross = new char[81];
+            Cross = new char[81];
 
-            for (var i = 0; i < 81; ++i) cross[i] = '?';
+            for (var i = 0; i < 81; ++i) Cross[i] = '?';
 
-            cross[0] = ' ';
+            Cross[0] = ' ';
 
-            cross[Ternary(one, one, one, one)] = (char)197;
-            cross[Ternary(two, two, two, two)] = (char)206;
-            cross[Ternary(two, one, two, one)] = (char)215;
-            cross[Ternary(one, two, one, two)] = (char)216;
+            Cross[Ternary(one, one, one, one)] = (char)197;
+            Cross[Ternary(two, two, two, two)] = (char)206;
+            Cross[Ternary(two, one, two, one)] = (char)215;
+            Cross[Ternary(one, two, one, two)] = (char)216;
 
-            cross[Ternary(one, one, none, one)] = (char)193;
-            cross[Ternary(none, one, one, one)] = (char)194;
-            cross[Ternary(one, none, one, one)] = (char)180;
-            cross[Ternary(one, one, one, none)] = (char)195;
+            Cross[Ternary(one, one, nil, one)] = (char)193;
+            Cross[Ternary(nil, one, one, one)] = (char)194;
+            Cross[Ternary(one, nil, one, one)] = (char)180;
+            Cross[Ternary(one, one, one, nil)] = (char)195;
 
-            cross[Ternary(two, one, none, one)] = (char)208;
-            cross[Ternary(none, one, two, one)] = (char)210;
-            cross[Ternary(one, none, one, two)] = (char)181;
-            cross[Ternary(one, two, one, none)] = (char)198;
+            Cross[Ternary(two, one, nil, one)] = (char)208;
+            Cross[Ternary(nil, one, two, one)] = (char)210;
+            Cross[Ternary(one, nil, one, two)] = (char)181;
+            Cross[Ternary(one, two, one, nil)] = (char)198;
 
-            cross[Ternary(one, two, none, two)] = (char)207;
-            cross[Ternary(none, two, one, two)] = (char)209;
-            cross[Ternary(two, none, two, one)] = (char)182;
-            cross[Ternary(two, one, two, none)] = (char)199;
+            Cross[Ternary(one, two, nil, two)] = (char)207;
+            Cross[Ternary(nil, two, one, two)] = (char)209;
+            Cross[Ternary(two, nil, two, one)] = (char)182;
+            Cross[Ternary(two, one, two, nil)] = (char)199;
 
-            cross[Ternary(two, two, none, two)] = (char)202;
-            cross[Ternary(none, two, two, two)] = (char)203;
-            cross[Ternary(two, none, two, two)] = (char)185;
-            cross[Ternary(two, two, two, none)] = (char)204;
+            Cross[Ternary(two, two, nil, two)] = (char)202;
+            Cross[Ternary(nil, two, two, two)] = (char)203;
+            Cross[Ternary(two, nil, two, two)] = (char)185;
+            Cross[Ternary(two, two, two, nil)] = (char)204;
 
             // Double line
-            cross[Ternary(two, none, two, none)] = (char)186;
-            cross[Ternary(none, two, none, two)] = (char)205;
-            cross[Ternary(two, none, none, two)] = (char)201;
-            cross[Ternary(two, two, none, none)] = (char)187;
-            cross[Ternary(none, none, two, two)] = (char)200;
-            cross[Ternary(none, two, two, none)] = (char)188;
+            Cross[Ternary(two, nil, two, nil)] = (char)186;
+            Cross[Ternary(nil, two, nil, two)] = (char)205;
+            Cross[Ternary(two, nil, nil, two)] = (char)188;
+            Cross[Ternary(two, two, nil, nil)] = (char)200;
+            Cross[Ternary(nil, nil, two, two)] = (char)187;
+            Cross[Ternary(nil, two, two, nil)] = (char)201;
 
             // Single line
-            cross[Ternary(one, none, one, none)] = (char)179;
-            cross[Ternary(none, one, none, one)] = (char)196;
-            cross[Ternary(one, none, none, one)] = (char)218;
-            cross[Ternary(one, one, none, none)] = (char)191;
-            cross[Ternary(none, none, one, one)] = (char)192;
-            cross[Ternary(none, one, one, none)] = (char)217;
+            Cross[Ternary(one, nil, one, nil)] = (char)179;
+            Cross[Ternary(nil, one, nil, one)] = (char)196;
+            Cross[Ternary(one, nil, nil, one)] = (char)217;
+            Cross[Ternary(one, one, nil, nil)] = (char)192;
+            Cross[Ternary(nil, nil, one, one)] = (char)191;
+            Cross[Ternary(nil, one, one, nil)] = (char)218;
+
+            Border = new Dictionary<BorderType, BorderDefinition>
+            {
+                {
+                    BorderType.Single,
+                    new BorderDefinition(Get(one, nil), Get(nil, one),
+                        Get(nil, one, one, nil),
+                        Get(nil, nil, one, one),
+                        Get(one, one, nil, nil),
+                        Get(one, nil, nil, one))
+                },
+                {
+                    BorderType.Double,
+                    new BorderDefinition(Get(two, nil), Get(nil, two),
+                        Get(nil, two, two, nil),
+                        Get(nil, nil, two, two),
+                        Get(two, two, nil, nil),
+                        Get(two, nil, nil, two))
+                }
+            }.ToImmutableDictionary();
         }
 
         public static char Get(BorderType topBottom, BorderType leftRight)
@@ -73,7 +98,7 @@ namespace TextUI
 
         public static char Get(BorderType top, BorderType right, BorderType bottom, BorderType left)
         {
-            return cross[Ternary(top, right, bottom, left)];
+            return Cross[Ternary(top, right, bottom, left)];
         }
 
         private static uint Ternary(BorderType top, BorderType right, BorderType bottom, BorderType left)
@@ -90,7 +115,7 @@ namespace TextUI
                 case BorderType.Double: return 2;
             }
 
-            throw new NotSupportedException("Unknown BorderType: " + type.ToString());
+            throw new NotSupportedException("Unknown BorderType: " + type);
         }
     }
 }

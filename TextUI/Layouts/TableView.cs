@@ -9,6 +9,10 @@ namespace TextUI.Layouts
     {
         private readonly ITable table;
 
+        private static readonly char Vertical = BoxArt.Get(BorderType.Single, BorderType.None);
+        private static readonly char Horizontal= BoxArt.Get(BorderType.None, BorderType.Single);
+        private static readonly char Cross = BoxArt.Get(BorderType.Single, BorderType.Single);
+
         public TableView(ITable table)
         {
             this.table = table;
@@ -72,15 +76,16 @@ namespace TextUI.Layouts
                 return ++line >= canvas.Height;
             }
 
-            if (Row(i => Pad(table.Columns[i], widths[i], table.GetTextAlign(i) == TextAlign.Right), Frame.SingleBorder.Vertical))
+            if (Row(i => Pad(table.Columns[i], widths[i], table.GetTextAlign(i) == TextAlign.Right), Vertical))
                 return feedback;
 
-            if (Row(i => new string(Frame.SingleBorder.Horizontal, widths[i] + 2), BoxArt.Get(BorderType.Single, BorderType.Single)))
+            
+            if (Row(i => new string(Horizontal, widths[i] + 2), Cross))
                 return feedback;
 
             foreach (var row in data)
             {
-                if (Row(i => Pad(row[i], widths[i], table.GetTextAlign(i) == TextAlign.Right), Frame.SingleBorder.Vertical))
+                if (Row(i => Pad(row[i], widths[i], table.GetTextAlign(i) == TextAlign.Right), Vertical))
                     return feedback;
             }
 

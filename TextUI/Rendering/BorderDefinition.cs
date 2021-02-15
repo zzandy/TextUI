@@ -2,14 +2,23 @@
 
 namespace TextUI.Rendering
 {
-    public struct BorderDefinition
+    public readonly struct BorderDefinition
     {
-        public char Vertical;
-        public char Horizontal;
-        public char TopLeft;
-        public char TopRight;
-        public char BottomLeft;
-        public char BottomRight;
-        public BorderType Type;
+        public readonly char Vertical;
+        public readonly char Horizontal;
+        public readonly char TopLeftCorner;
+        public readonly char TopRightCorner;
+        public readonly char BottomLeftCorner;
+        public readonly char BottomRightCorner;
+
+        public BorderDefinition(char vertical, char horizontal, char topLeftCorner, char topRightCorner, char bottomLeftCorner, char bottomRightCorner)
+        {
+            Vertical = vertical;
+            Horizontal = horizontal;
+            TopLeftCorner = topLeftCorner;
+            TopRightCorner = topRightCorner;
+            BottomLeftCorner = bottomLeftCorner;
+            BottomRightCorner = bottomRightCorner;
+        }
     }
 }

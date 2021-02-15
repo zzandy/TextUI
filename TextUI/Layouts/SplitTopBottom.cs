@@ -1,4 +1,5 @@
-﻿using TextUI.Extensions;
+﻿using System.Data;
+using TextUI.Extensions;
 using TextUI.Interfaces;
 using TextUI.Rendering;
 
@@ -8,13 +9,13 @@ namespace TextUI.Layouts
     {
         private readonly IRender top;
         private readonly IRender bottom;
-        private readonly BorderDefinition? borderDefinition;
+        private readonly BorderType? border;
 
-        public SplitTopBottom(IRender top, IRender bottom, BorderDefinition? borderDefinition = null)
+        public SplitTopBottom(IRender top, IRender bottom, BorderType? border = null)
         {
             this.top = top;
             this.bottom = bottom;
-            this.borderDefinition = borderDefinition;
+            this.border = border;
         }
 
         public void Render(ICanvas canvas)
@@ -33,15 +34,42 @@ namespace TextUI.Layouts
 
             var feedback = new Feedback();
 
-            if (top is IBorderFeedback fb)
-                feedback.Apply(fb.Render(canvas.Area(0, 0, canvas.Width, splitAt)).NotBottom());
+            if (border.HasValue)
+                feedback.Left[splitAt] = feedback.Right[splitAt] = border.Value;
+
+            Feedback feedbackTop = new Feedback();
+            Feedback feedbackBottom = new Feedback();
+
+            if (top is IBorderFeedback fb1)
+            {
+                feedbackTop = fb1.Render(canvas.Area(0, 0, canvas.Width, splitAt));
+                feedback.Apply(feedbackTop.NotBottom());
+            }
             else
                 top.Render(canvas.Area(0, 0, canvas.Width, splitAt));
 
-            if (bottom is IBorderFeedback borderFeedback)
-                feedback.Apply(borderFeedback.Render(canvas.Area(0, splitAt, canvas.Width, canvas.Height - splitAt)).NotTop(), 0, splitAt);
+
+            if (bottom is IBorderFeedback fb2)
+            {
+                var i = (border.HasValue ? 1 : 0);
+                feedbackBottom = fb2.Render(canvas.Area(0, splitAt + i, canvas.Width, canvas.Height - splitAt));
+                feedback.Apply(feedbackBottom.NotTop(), 0, splitAt + i);
+            }
             else
                 bottom.Render(canvas.Area(0, splitAt, canvas.Width, canvas.Height - splitAt));
+
+            if (border.HasValue)
+                for (int i = 0; i < canvas.Width; i++)
+                {
+                    var c = BoxArt.Get(
+                        feedbackBottom.Top.TryGetValue(i, out var bl) ? bl : BorderType.None,
+                        border.Value,
+                        feedbackTop.Bottom.TryGetValue(i, out var br) ? br : BorderType.None,
+                        border.Value
+                    );
+
+                    canvas.Put(i, splitAt, c); ;
+                }
 
             return feedback;
         }
